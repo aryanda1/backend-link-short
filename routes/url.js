@@ -1,13 +1,13 @@
 const express = require("express");
+const cors = require("cors");
 const {
   handleGenerateNewShortURL,
-  handleGetAnalytics,
 } = require("../controllers/url");
 
 const router = express.Router();
-
-router.post("/", handleGenerateNewShortURL);
-
-router.get("/analytics/:shortId", handleGetAnalytics);
+let corsOptions = {
+  origin : ['https://git.ary0n.fun/short-link','https://git.ary0n.fun/short-link/','https://git.ary0n.fun/short-link/#'],
+}
+router.post("/", cors(corsOptions),handleGenerateNewShortURL);
 
 module.exports = router;
