@@ -6,7 +6,7 @@ const {
 
 const router = express.Router();
 let corsOptions = {
-  origin : ['https://git.ary0n.fun/short-link','https://git.ary0n.fun/short-link/','https://git.ary0n.fun/short-link/#'],
+  origin : ['https://git.ary0n.fun/short-link','https://git.ary0n.fun/short-link/','https://git.ary0n.fun/short-link/#','https://git.ary0n.fun'],
 }
 router.post("/", cors(),handleGenerateNewShortURL);
 
