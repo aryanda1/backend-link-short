@@ -7,7 +7,7 @@ const URL = require("./models/url");
 const app = express();
 const PORT = 8001;
 let corsOptions = {
-  origin : ['https://git.ary0n.fun/short-link','https://git.ary0n.fun/short-link/','https://git.ary0n.fun/short-link/#'],
+  origin : ['https://git.ary0n.fun/short-link','https://git.ary0n.fun/short-link/','https://git.ary0n.fun/short-link/#','https://git.ary0n.fun'],
 }
  
 app.options('*', cors(corsOptions)) 
