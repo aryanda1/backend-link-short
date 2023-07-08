@@ -10,7 +10,7 @@ let corsOptions = {
   origin : ['https://git.ary0n.fun/short-link','https://git.ary0n.fun/short-link/','https://git.ary0n.fun/short-link/#'],
 }
  
-app.options('*', cors(corsOptions)) 
+app.options('*', cors()) 
 connectToMongoDB(process.env.DB_URL).then(() =>
   console.log("Mongodb connected")
 );
