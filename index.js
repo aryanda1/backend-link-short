@@ -1,33 +1,49 @@
 const express = require("express");
 const cors = require("cors");
-const { connectToMongoDB } = require("./connect");
+const { connect } = require("./connect");
 const urlRoute = require("./routes/url");
-const URL = require("./models/url");
 
 const app = express();
 const PORT = 8001;
 let corsOptions = {
-  origin : ['https://git.ary0n.fun/short-link','https://git.ary0n.fun/short-link/','https://git.ary0n.fun/short-link/#','https://git.ary0n.fun'],
-}
- 
-app.options('*', cors()) 
-connectToMongoDB(process.env.DB_URL).then(() =>
-  console.log("Mongodb connected")
-);
+  origin: [
+    "https://git.ary0n.fun/short-link",
+    "https://git.ary0n.fun/short-link/",
+    "https://git.ary0n.fun/short-link/#",
+    "https://git.ary0n.fun",
+  ],
+};
 
 app.use(express.json());
+app.use(cors({
+  origin: corsOptions.origin,
+}));
+
+let client;
+connect().then((conClient) => {
+  client = conClient;
+  console.log("YugabyteDB connected");
+  app.use("/url", urlRoute(client));
+  
+  app.listen(PORT, () => console.log(`Server Started at PORT:${PORT}`));
+});
 
 app.get("/", (req, res) => {
+  console.log("Redirecting to https://git.ary0n.fun/short-link");
   res.redirect("https://git.ary0n.fun/short-link");
 });
 
-app.use("/url", urlRoute);
 
 app.get("/:shortId", async (req, res) => {
   const shortId = req.params.shortId;
-  const entry = await URL.findOne({ shortId });
-  if (!entry) return res.status(404).json({ error: "URL not found" });
-  res.redirect(entry.redirectURL);
+  const sql = "SELECT * FROM url WHERE shortId = $1";
+  const values = [shortId];
+  const result = await client.query(sql, values);
+  console.log(shortId,result.rowCount,result.command);
+
+  if (result.rowCount == 0)
+    return res.status(404).json({ error: "URL not found" });
+  res.redirect(result.rows[0].redirecturl);
 });
 
-app.listen(PORT, () => console.log(`Server Started at PORT:${PORT}`));
+
