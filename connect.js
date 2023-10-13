@@ -1,28 +1,24 @@
 // const mongoose = require("mongoose");
-var pg = require("pg");
+const postgres = require('postgres');
+require('dotenv').config();
 // const async = require('async');
-
+let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
 const config = {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PWD,
-  ssl: {
-    rejectUnauthorized: true,
-    ca: Buffer.from(process.env.DB_CERT, "base64").toString("ascii"),
+  host: PGHOST,
+  database: PGDATABASE,
+  username: PGUSER,
+  password: PGPASSWORD,
+  port: 5432,
+  ssl: 'require',
+  connection: {
+    options: `project=${ENDPOINT_ID}`,
   },
-  connectionTimeoutMillis: 5000,
 };
-
+// hlo
 async function connect() {
-  const client = new pg.Client(config);
+  const client = postgres(config);
 
-  await client.connect();
-
-  const sql =
-    "CREATE TABLE IF NOT EXISTS url (shortId VARCHAR(5) PRIMARY KEY,redirectURL VARCHAR(1000))";
-  await client.query(sql);
+  await client`CREATE TABLE IF NOT EXISTS url (shortId VARCHAR(5) PRIMARY KEY,redirectURL VARCHAR(1000))`;
 
   return client;
 }

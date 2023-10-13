@@ -12,20 +12,14 @@ let corsOptions = {
 };
 const router = express.Router();
 const urlRoute = (client) => {
-  router.post(
-    "/",
-    cors({
-      origin: corsOptions.origin,
-    }),
-    async (req, res) => {
-      try {
-        await handleGenerateNewShortURL(req, res, client);
-      } catch (error) {
-        console.error("Error handling generate new short URL:", error);
-        res.status(500).json({ error: "Internal server error" });
-      }
+  router.post("/", cors(), async (req, res) => {
+    try {
+      await handleGenerateNewShortURL(req, res, client);
+    } catch (error) {
+      console.error("Error handling generate new short URL:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-  );
+  });
   return router;
 };
 
